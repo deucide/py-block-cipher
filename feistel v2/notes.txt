@@ -1,0 +1,19 @@
+feistel network
+
+details
+    keysize = 128, 192, 256
+    blocksize = 256 bits
+    rounds = 11, 15, 21 ?
+
+full run
+    split state into s_a and s_b + gen key schedule
+    (key sub perm diffuse) s_a -> xor into s_b
+    (key sub perm diffuse) s_b -> xor into s_a
+    etc.
+
+notes on each item
+    diffuse: for any non zero change, all bits have a 50% chance of changing
+    sub: nonlinear sbox ??? + bypos
+    key: xor both
+    permute: intended to help diffuse -> shift from areas w/ high influence -> low, low -> high
+    keyschedule: gen list of ints with a kernel + tail put into sbox
