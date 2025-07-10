@@ -6,14 +6,8 @@ uses the basic encryption/decryption function and adds modes
 '''
 
 def mode_encrypt(state, key, extra=[], mode='ecb'):
-    '''
-    extra treated as iv or nonce depending on context
+    #extra treated as iv or nonce depending on context
 
-    supports multiple blocks
-    allows for special modes
-
-    uses bit padding (first 1 then 0s as necessary)
-    '''
     #convert to bits and padding
     bstring = ''
     for i in state:
@@ -21,7 +15,7 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
         while len(i_bits)<8:
             i_bits = '0' + i_bits
         bstring += i_bits
-    
+    #add 1 then 0s as necessary
     bstring += '1'
     while len(bstring)%256 != 0:
         bstring+='0'
@@ -80,14 +74,7 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
             
 
 def mode_decrypt(state, key, extra=[], mode='ecb'):
-    '''
-    extra treated as iv or nonce depending on context
-
-    supports multiple blocks
-    allows for special modes
-
-    uses bit padding (first 1 then 0s as necessary)
-    '''
+    #extra treated as iv or nonce depending on context
 
     #forming blocks
     blocks = [state[32*i:32*i+32] for i in range(len(state)//32)]
@@ -148,7 +135,7 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
         while len(i_bits)<8:
             i_bits = '0' + i_bits
         bstring += i_bits
-    
+    #see mode encrypt for padding details
     while bstring[-1]=='0':
         bstring = bstring[:-1]
     bstring = bstring[:-1]
