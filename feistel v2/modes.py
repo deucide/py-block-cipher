@@ -8,6 +8,13 @@ uses the basic encryption/decryption function and adds modes
 def mode_encrypt(state, key, extra=[], mode='ecb'):
     #extra treated as iv or nonce depending on context
 
+    #initialize extra if none given
+    if extra==[]:
+        if mode in ['cfb', 'cbc', 'ofb', 'pcbc']:
+            extra = [0 for i in range(16)]
+        elif mode == 'ctr':
+            extra = [0 for i in range(8)]
+
     #convert to bits and padding
     bstring = ''
     for i in state:
@@ -75,6 +82,13 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
 
 def mode_decrypt(state, key, extra=[], mode='ecb'):
     #extra treated as iv or nonce depending on context
+
+    #initialize extra if none given
+    if extra==[]:
+        if mode in ['cfb', 'cbc', 'ofb', 'pcbc']:
+            extra = [0 for i in range(16)]
+        elif mode == 'ctr':
+            extra = [0 for i in range(8)]
 
     #forming blocks
     blocks = [state[32*i:32*i+32] for i in range(len(state)//32)]
