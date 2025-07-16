@@ -61,12 +61,12 @@ if __name__=='__main__':
     src, key, and extra can all be a str or list
     '''
 
-    mode = 'pcbc'
+    mode = 'ecb'
     enc_or_dec = 'enc'
 
     #these can be str or list
-    src = 'tdst'
-    key = 'rtyuiuyf'
+    src = ''
+    key = ''
     extra = [0 for i in range(32)] #used as iv or nonce depending on context
 
     if isinstance(key, str):

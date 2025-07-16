@@ -33,4 +33,8 @@ SUB_INV_SBOX2 = [239, 4, 70, 94, 163, 120, 15, 211, 51, 179, 23, 177, 160, 208, 
 
 'following used in whole.py'
 #get num of rounds from keysize
-WHOLE_KEYSIZE_TO_ROUNDS = {16:10,24:15,32:20}
+WHOLE_KEYSIZE_TO_ROUNDS = {16:10,24:15,32:20} #ARBITRARY
+
+'following used in main.py'
+#values for base 64 conversion
+MAIN_B64_CONVERTOR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
