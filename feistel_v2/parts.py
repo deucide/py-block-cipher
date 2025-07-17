@@ -1,7 +1,7 @@
-from constants import diff_sbox1, diff_sbox2
-from constants import keysched_sbox
-from constants import perm_pbox, perm_invpbox
-from constants import sub_sbox, sub_invsbox, sub_bypos
+from feistel_v2.constants import diff_sbox1, diff_sbox2
+from feistel_v2.constants import keysched_sbox
+from feistel_v2.constants import perm_pbox, perm_invpbox
+from feistel_v2.constants import sub_sbox, sub_invsbox, sub_bypos
 
 '''
 makes the individual parts used in basic.py

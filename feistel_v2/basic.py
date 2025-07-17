@@ -1,7 +1,7 @@
-from parts import keysched
-from parts import addkey, diff, perm, sub
-from parts import inv_diff, inv_perm, inv_sub
-from constants import rounds
+from feistel_v2.parts import keysched
+from feistel_v2.parts import addkey, diff, perm, sub
+from feistel_v2.parts import inv_diff, inv_perm, inv_sub
+from feistel_v2.constants import rounds
 
 '''
 handles the basic encryption/decryption w/o modes

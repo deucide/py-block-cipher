@@ -1,7 +1,7 @@
-from constants import WHOLE_KEYSIZE_TO_ROUNDS
-from parts import keyexp
-from parts import addkey, mix, perm, sub1, sub2
-from parts import inv_addkey, inv_mix, inv_perm, inv_sub1, inv_sub2
+from feistel_v3.constants import WHOLE_KEYSIZE_TO_ROUNDS
+from feistel_v3.parts import keyexp
+from feistel_v3.parts import addkey, mix, perm, sub1, sub2
+from feistel_v3.parts import inv_addkey, inv_mix, inv_perm, inv_sub1, inv_sub2
 
 #encrypt, decrypt blocks
 def encrypt_block(state, init_key):

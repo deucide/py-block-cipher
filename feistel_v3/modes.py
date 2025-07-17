@@ -1,12 +1,12 @@
-from basic import base_encrypt, base_decrypt
-from parts import addkey
+from feistel_v3.whole import encrypt_block, decrypt_block
+from feistel_v3.parts import addkey
 
 '''
 uses the basic encryption/decryption function and adds modes
 '''
 
 def mode_encrypt(state, key, extra=[], mode='ecb'):
-    #extra treated as iv or nonce depending on context
+    #uses bit padding (first 1 then 0s as necessary)
 
     #initialize extra if none given
     if extra==[]:
@@ -33,43 +33,43 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
 
     #encrypting each block
     if mode=='ecb':
-        blocks = [base_encrypt(block, key) for block in blocks]
+        blocks = [encrypt_block(block, key) for block in blocks]
     elif mode=='cfb':
         for i, block in enumerate(blocks):
             if i==0:
-                blocks[i] = addkey(base_encrypt(extra, key), block)
+                blocks[i] = addkey(encrypt_block(extra, key), block)
             else:
-                blocks[i] = addkey(base_encrypt(blocks[i-1], key), block)
+                blocks[i] = addkey(encrypt_block(blocks[i-1], key), block)
     elif mode=='cbc':
         for i, block in enumerate(blocks):
             if i==0:
-                blocks[i] = base_encrypt(addkey(block, extra), key)
+                blocks[i] = encrypt_block(addkey(block, extra), key)
             else:
-                blocks[i] = base_encrypt(addkey(block, blocks[i-1]), key)
+                blocks[i] = encrypt_block(addkey(block, blocks[i-1]), key)
     elif mode=='ofb':
         num_blocks = len(blocks)
-        output_feedback = [base_encrypt(extra, key)]
+        output_feedback = [encrypt_block(extra, key)]
         for i in range(num_blocks-1):
-            output_feedback.append(base_encrypt(output_feedback[-1], key))
+            output_feedback.append(encrypt_block(output_feedback[-1], key))
         blocks = [addkey(output_feedback[i], blocks[i]) for i in range(num_blocks)]
     elif mode=='pcbc':
         plaintext_copy = [i for i in blocks]
         for i in range(len(blocks)):
             if i==0:
-                blocks[i] = base_encrypt(addkey(blocks[i], extra), key)
+                blocks[i] = encrypt_block(addkey(blocks[i], extra), key)
             else:
                 to_xor = addkey(plaintext_copy[i-1], blocks[i-1])
-                blocks[i] = base_encrypt(addkey(blocks[i], to_xor), key)
+                blocks[i] = encrypt_block(addkey(blocks[i], to_xor), key)
     elif mode=='ctr':
         num_blocks = len(blocks)
         to_encrypt = []
         for i in range(num_blocks):
-            ctr_bits = bin(i%65536)[2:]
+            ctr_bits = bin(i&0b1111111111111111)[2:]
             while len(ctr_bits)<128:
                 ctr_bits = '0' + ctr_bits
             ctr_dec=[int(ctr_bits[8*i:8*i+8], 2) for i in range(len(ctr_bits)//8)]
             to_encrypt.append(extra + ctr_dec)
-        blocks = [addkey(base_encrypt(to_encrypt[i], key), blocks[i]) for i in range(num_blocks)]
+        blocks = [addkey(encrypt_block(to_encrypt[i], key), blocks[i]) for i in range(num_blocks)]
     else:
         raise ValueError('cipher mode is unsupported or invalid')
 
@@ -95,16 +95,16 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
 
     #decrypting each block
     if mode=='ecb':
-        blocks = [base_decrypt(block, key) for block in blocks]
+        blocks = [decrypt_block(block, key) for block in blocks]
     elif mode=='cfb':
         partial_decrypt = [
-            base_encrypt(extra, key) if i==0
-            else base_encrypt(blocks[i-1], key)
+            encrypt_block(extra, key) if i==0
+            else encrypt_block(blocks[i-1], key)
             for i in range(len(blocks))
         ]
         blocks = [addkey(blocks[i], partial_decrypt[i]) for i in range(len(blocks))]
     elif mode=='cbc':
-        partial_decrypt = [base_decrypt(block, key) for block in blocks]
+        partial_decrypt = [decrypt_block(block, key) for block in blocks]
         blocks = [
             addkey(partial_decrypt[i], extra) if i==0
             else addkey(partial_decrypt[i], blocks[i-1])
@@ -112,13 +112,13 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
         ]
     elif mode=='ofb':
         num_blocks = len(blocks)
-        output_feedback = [base_encrypt(extra, key)]
+        output_feedback = [encrypt_block(extra, key)]
         for i in range(num_blocks-1):
-            output_feedback.append(base_encrypt(output_feedback[-1], key))
+            output_feedback.append(encrypt_block(output_feedback[-1], key))
         blocks = [addkey(output_feedback[i], blocks[i]) for i in range(num_blocks)]
     elif mode=='pcbc':
         ciphertext_copy = [i for i in blocks]
-        partial_decrypt = [base_decrypt(block, key) for block in blocks]
+        partial_decrypt = [decrypt_block(block, key) for block in blocks]
         for i in range(len(blocks)):
             if i==0:
                 blocks[i]=addkey(partial_decrypt[i], extra)
@@ -129,12 +129,12 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
         num_blocks = len(blocks)
         to_encrypt = []
         for i in range(num_blocks):
-            ctr_bits = bin(i%65536)[2:]
+            ctr_bits = bin(i&0b1111111111111111)[2:]
             while len(ctr_bits)<128:
                 ctr_bits = '0' + ctr_bits
             ctr_dec=[int(ctr_bits[8*i:8*i+8], 2) for i in range(len(ctr_bits)//8)]
             to_encrypt.append(extra + ctr_dec)
-        blocks = [addkey(base_encrypt(to_encrypt[i], key), blocks[i]) for i in range(num_blocks)]
+        blocks = [addkey(encrypt_block(to_encrypt[i], key), blocks[i]) for i in range(num_blocks)]
     else:
         raise ValueError('cipher mode is unsupported or invalid')
 
@@ -149,7 +149,7 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
         while len(i_bits)<8:
             i_bits = '0' + i_bits
         bstring += i_bits
-    #see mode encrypt for padding details
+    #see mode_encrypt for padding details
     while bstring[-1]=='0':
         bstring = bstring[:-1]
     bstring = bstring[:-1]

@@ -5,9 +5,6 @@ bunch of constants used later
 #operation
 rounds = 23
 
-#base64 <-> bytes
-b64_convertor = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-
 #diffuse
 diff_sbox1 = [
 	162, 99, 109, 51,
