@@ -79,7 +79,7 @@ if __name__=='__main__':
     extra = [0 for i in range(32)] #used as iv or nonce depending on context
 
     if isinstance(src, str):
-        src = b64_to_bytes(src)
+        src = str_to_bytes(src)
     if isinstance(key, str):
         key = str_to_bytes(key)
     if isinstance(extra, str):
