@@ -66,26 +66,49 @@ if __name__=='__main__':
     key size -> any length, the longer the better
     23 rounds using a feistel design
 
-    src, key, and extra can all be a str or list
+    io modes are:
+        utf8: for standard string input
+        bytes: for a list of integers (ie bytes)
+        b64: for base64
     '''
 
+    #cipher config
     cipher_mode = 'ecb'
     enc_or_dec = 'enc'
-    cipher = 'feistel v2'
+    cipher = 'feistel v3'
 
-    #these can be str or list
+    #data value io
     src = ''
     key = ''
-    extra = [0 for i in range(32)] #used as iv or nonce depending on context
+    extra = [0 for i in range(8)] #used as iv or nonce depending on context
 
-    if isinstance(src, str):
+    #handles io formats
+    src_imode = 'utf8'
+    key_imode = 'utf8'
+    extra_imode = 'bytes'
+    ctext_omode = 'b64'
+
+    #converting input data to bytes
+    if src_imode == 'utf8':
         src = str_to_bytes(src)
-    if isinstance(key, str):
+    elif src_imode == 'b64':
+        src = b64_to_bytes(src)
+    elif src_imode != 'bytes':
+        raise ValueError('main.py: improper src_imode passed')
+    if key_imode == 'utf8':
         key = str_to_bytes(key)
-    if isinstance(extra, str):
+    elif key_imode == 'b64':
+        key = b64_to_bytes(key)
+    elif key_imode != 'bytes':
+        raise ValueError('main.py: improper key_imode passed')
+    if extra_imode == 'utf8':
         extra = str_to_bytes(extra)
+    elif extra_imode == 'b64':
+        extra = b64_to_bytes(extra)
+    elif extra_imode != 'bytes':
+        raise ValueError('main.py: improper extra_imode passed')
 
-    #likely unnecessary?
+    #encryption/decryption
     if cipher == 'feistel v2':
         if enc_or_dec == 'enc':
             f = feistel_v2_mode_encrypt
@@ -96,5 +119,13 @@ if __name__=='__main__':
             f = feistel_v3_mode_encrypt
         elif enc_or_dec == 'dec':
             f = feistel_v3_mode_decrypt
+    ctext = f(src, key, extra, cipher_mode)
 
-    print(bytes_to_b64(f(src, key, extra, cipher_mode)))
+    #convert bytes to output data
+    if ctext_omode == 'utf8':
+        ctext = bytes_to_str(ctext)
+    elif ctext_omode == 'b64':
+        ctext = bytes_to_b64(ctext)
+    elif ctext_omode != 'bytes':
+        raise ValueError('main.py: improper ctext_omode passed')
+    print(ctext)
