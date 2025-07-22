@@ -29,7 +29,7 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
 
     #forming blocks
     dec_vals = [int(bstring[8*i:8*i+8], 2) for i in range(len(bstring)//8)]
-    blocks = [dec_vals[32*i:32*i+32] for i in range(len(dec_vals)//32)]
+    blocks = [dec_vals[16*i:16*i+16] for i in range(len(dec_vals)//16)]
 
     #encrypting each block
     if mode=='ecb':
@@ -64,8 +64,8 @@ def mode_encrypt(state, key, extra=[], mode='ecb'):
         num_blocks = len(blocks)
         to_encrypt = []
         for i in range(num_blocks):
-            ctr_bits = bin(i&0b1111111111111111)[2:]
-            while len(ctr_bits)<128:
+            ctr_bits = bin(i&0b11111111)[2:]
+            while len(ctr_bits)<64:
                 ctr_bits = '0' + ctr_bits
             ctr_dec=[int(ctr_bits[8*i:8*i+8], 2) for i in range(len(ctr_bits)//8)]
             to_encrypt.append(extra + ctr_dec)
@@ -91,7 +91,7 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
             extra = [0 for i in range(8)]
 
     #forming blocks
-    blocks = [state[32*i:32*i+32] for i in range(len(state)//32)]
+    blocks = [state[16*i:16*i+16] for i in range(len(state)//32)]
 
     #decrypting each block
     if mode=='ecb':
@@ -129,8 +129,8 @@ def mode_decrypt(state, key, extra=[], mode='ecb'):
         num_blocks = len(blocks)
         to_encrypt = []
         for i in range(num_blocks):
-            ctr_bits = bin(i&0b1111111111111111)[2:]
-            while len(ctr_bits)<128:
+            ctr_bits = bin(i&0b11111111)[2:]
+            while len(ctr_bits)<64:
                 ctr_bits = '0' + ctr_bits
             ctr_dec=[int(ctr_bits[8*i:8*i+8], 2) for i in range(len(ctr_bits)//8)]
             to_encrypt.append(extra + ctr_dec)
