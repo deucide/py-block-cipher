@@ -22,42 +22,37 @@ def d(u, a):
         if m(a,b) == u:
             return b
     return -1
-INIT1 = 0b01100101
+INIT1 = 0b01100101 #randomly gen.d
 DIFF1 = [
-    #randomly generated
-    #although each has ideal hamming weight of 4
-    #but couldnt find any setup of DIFF that fit
-    #so resorted to mixed weights of 4s and 5s
-    0b10110110,
-    0b10010101,
-    0b01101011,
+    0b01010111,
+    0b10101110,
+    0b01011101,
+    0b10111010,
     0b01110101,
-    0b10101001,
-    0b01000111,
-    0b00110101,
-    0b01111000,
-]
-INIT2 = 0b10100011
-DIFF2 = [
-    #see diff1 for same remarks
-    0b01010110,
-    0b10111001,
-    0b01110010,
-    0b10110100,
     0b11101010,
-    0b11000111,
-    0b10101101,
-    0b01101101,
+    0b11010101,
+    0b10101011,
+]
+INIT2 = 0b10100011 #randomly gen.d
+DIFF2 = [
+    0b11001011,
+    0b10010111,
+    0b00101111,
+    0b01011110,
+    0b10111100,
+    0b01111001,
+    0b11110010,
+    0b11100101,
 ]
 def sub(i): #nyberg sbox
     #map to multiplicative inverse on gf
     i=d(1,i)
 
     #equal to affine transform
-    o = INIT1 #initial constant
+    o = INIT2 #initial constant
     for _i in range(8):
         if i&(1<<_i):
-            o^=DIFF1[_i] #adding differential
+            o^=DIFF2[_i] #adding differential
     return o
 print([sub(i) for i in range(256)])
 
