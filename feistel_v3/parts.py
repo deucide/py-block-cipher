@@ -1,4 +1,4 @@
-from feistel_v3.constants import MIX_MDS, MIX_INV_MDS
+from feistel_v3.constants import MIX_MATRIX, MIX_INV_MATRIX
 from feistel_v3.constants import PERM_PBOX, PERM_INV_PBOX
 from feistel_v3.constants import SUB_SBOX1, SUB_SBOX2, SUB_INV_SBOX1, SUB_INV_SBOX2
 
@@ -47,12 +47,12 @@ def keyexp(init_key, rounds):
 def mix(state):
     output = [-1 for i in range(8)]
     for i in range(len(state)):
-        output[i]=_dot_prod(MIX_MDS[i], state)
+        output[i]=_dot_prod(MIX_MATRIX[i], state)
     return output
 def inv_mix(state):
     output = [-1 for i in range(8)]
     for i in range(len(state)):
-        output[i]=_dot_prod(MIX_INV_MDS[i], state)
+        output[i]=_dot_prod(MIX_INV_MATRIX[i], state)
     return output
 
 #permutation, inverse

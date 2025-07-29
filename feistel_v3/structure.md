@@ -24,9 +24,9 @@
 ### parts:   
     ADDKEY                              xor(state, round key)
         i=o = 128bits=16bytes   
-    MIX                                 (state → vector) \* mds   
+    MIX                                 (state → vector) \* matrix   
         i=o = 64bits=8bytes   
-        mds                             cyclic using rots of [1,13,1,11,2,7,3,5]   
+        matrix                          cyclic using rots of [1,13,1,11,2,7,3,5]   
             dimensions                  (8x8, bytes)   
         over                            gf(256)/<x8+x7+x5+x+1> 
     PERMUTE                             permute nibbles by map   
