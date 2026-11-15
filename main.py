@@ -59,7 +59,7 @@ if __name__=='__main__':
     '''
     INFO ->
     supported cipher modes: ecb cfb cbc ofb pcbc ctr
-    for enc_of_dec, specify either 'enc' or 'dec'
+    for enc_or_dec, specify either 'enc' or 'dec'
     for cipher, specify either 'feistel v2' or 'feistel v3'
 
     block size of 256 bits = 32 bytes
