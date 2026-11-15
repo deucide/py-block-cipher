@@ -1,4 +1,9 @@
-feistel network
+modified feistel network
+really really rough notes
+
+rather than xor-ing one half with a processed other half
+thought process was to have both halves be affected, but only requiring more expensive calculations on one half
+however, sacrifices opportunity to have a more non-linear, yet one-way transform done
 
 details
     keysize = 128, 192, 256
